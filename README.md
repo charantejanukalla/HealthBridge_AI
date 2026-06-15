@@ -100,48 +100,9 @@ When a coordinator submits a patient request, the AI engine processes the name, 
      npx serve
      ```
      Then open `http://localhost:3000` or the output URL.
-
 ---
 
-## 8. Deployment to Vercel
-
-You can deploy HealthBridge AI to Vercel in seconds since it is a static frontend project:
-
-### Option A: Using the Vercel CLI
-1. Open your terminal in the project directory.
-2. Install the Vercel CLI if you haven't already:
-     ```bash
-     npm install -g vercel
-     ```
-3. Run the deployment command:
-     ```bash
-     vercel
-     ```
-4. Follow the prompts:
-   - Set up and deploy: **Yes**
-   - Which scope: Select your personal team account
-   - Link to existing project: **No**
-   - Project name: `healthbridge-ai`
-   - Directory: `./` (current directory)
-   - Auto-detected settings: Accept defaults (Vercel automatically detects HTML/CSS/JS)
-5. The CLI will output a live inspection link and a production deployment URL (e.g. `https://healthbridge-ai.vercel.app`).
-
-### Option B: Deploying via GitHub Git Integration
-1. Initialize a Git repository and commit the code:
-   ```bash
-   git init
-   git add .
-   git commit -m "Initial commit of HealthBridge AI application"
-   ```
-2. Create a new repository on GitHub and push your local commits.
-3. Go to [Vercel](https://vercel.com) and log in.
-4. Click **Add New...** -> **Project**.
-5. Import your GitHub repository.
-6. Click **Deploy**. Vercel will automatically host the static page.
-
----
-
-## 9. Future Enhancements
+## 8. Future Enhancements
 
 - **Persistent Database**: Integration with Firebase FireStore or PostgreSQL for persistent state saving.
 - **SMS & WhatsApp Dispatch**: Auto-dispatch SMS/WhatsApp notifications to assigned volunteers using Twilio APIs.
