@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HealthBridge AI - NGO Healthcare Support Platform</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="HealthBridge AI is a professional, production-quality dashboard supporting NGOs, volunteers, and hospitals in coordination of patient support and emergency medical resource allocation.">
+  <meta name="author" content="Sai Charan Teja Nukalla">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+  <!-- App Wrapper -->
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="app-sidebar">
+      <div class="sidebar-brand">
+        <div class="logo-icon">
+          <i data-lucide="heart-pulse"></i>
+        </div>
+        <div class="brand-text">
+          <h1>HealthBridge</h1>
+          <span>AI Enabled Portal</span>
+        </div>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <ul>
+          <li>
+            <button class="nav-link active" data-view="dashboard" id="nav-btn-dashboard">
+              <i data-lucide="layout-dashboard"></i>
+              <span>Dashboard</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-link" data-view="patient-support" id="nav-btn-patients">
+              <i data-lucide="user-plus"></i>
+              <span>Patient Support</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-link" data-view="volunteer" id="nav-btn-volunteers">
+              <i data-lucide="users"></i>
+              <span>Volunteer Registration</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-link" data-view="faq" id="nav-btn-chatbot">
+              <i data-lucide="bot"></i>
+              <span>AI FAQ Assistant</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-link" data-view="hospitals" id="nav-btn-hospitals">
+              <i data-lucide="building-2"></i>
+              <span>Partner Hospitals</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-link" data-view="reports" id="nav-btn-reports">
+              <i data-lucide="trending-up"></i>
+              <span>Reports & Analytics</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+      
+      <div class="sidebar-user-footer">
+        <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=100" alt="Dr. Amanda" class="user-avatar-sm" loading="lazy">
+        <div class="user-info">
+          <span class="user-name">Dr. Amanda Lee</span>
+          <span class="user-role">NGO Coordinator</span>
+        </div>
+      </div>
+    </aside>
+    
+    <!-- Main Content Panel -->
+    <main class="main-content" id="app-main-content">
+      
+      <!-- Top Navigation Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Toggle Sidebar">
+            <i data-lucide="menu"></i>
+          </button>
+          <div class="search-wrapper">
+            <i data-lucide="search" class="search-icon"></i>
+            <input type="text" id="global-search" placeholder="Search patients, volunteers, or hospitals..." autocomplete="off">
+          </div>
+        </div>
+        
+        <div class="topbar-right">
+          <!-- Notification Dropdown Toggle -->
+          <div class="notification-badge-wrapper" id="notifications-trigger">
+            <button class="icon-btn" aria-label="Notifications">
+              <i data-lucide="bell"></i>
+              <span class="badge-dot"></span>
+            </button>
+            <!-- Dropdown Menu -->
+            <div class="notification-dropdown glass-card" id="notification-dropdown-menu">
+              <div class="dropdown-header">
+                <h3>Notifications</h3>
+                <button class="mark-read-btn" id="mark-all-read">Mark all read</button>
+              </div>
+              <ul class="notification-list" id="notification-list-container">
+                <!-- Notifications populated by JS -->
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Quick Status Indicator -->
+          <div class="system-status-indicator">
+            <span class="status-pulse"></span>
+            <span class="status-text">System Live</span>
+          </div>
+          
+          <div class="theme-divider"></div>
+          
+          <!-- User Profile -->
+          <div class="profile-summary">
+            <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=150" alt="Dr. Amanda Avatar" class="profile-avatar" loading="lazy">
+          </div>
+        </div>
+      </header>
+      
+      <!-- Content View Container -->
+      <div class="view-container">
+        
+        <!-- ========================================== -->
+        <!-- DASHBOARD VIEW                             -->
+        <!-- ========================================== -->
+        <section id="view-dashboard" class="view-panel active-view">
+          <div class="view-header">
+            <div>
+              <h2 class="view-title">Dashboard Overview</h2>
+              <p class="view-subtitle">Real-time coordinator dashboard and medical support request analytics</p>
+            </div>
+            <div class="view-actions">
+              <button class="btn btn-primary" id="dashboard-new-request-btn">
+                <i data-lucide="plus"></i>
+                New Support Request
+              </button>
+            </div>
+          </div>
+          
+          <!-- Top Statistics Cards -->
+          <div class="stats-grid">
+            <div class="stat-card glass-card">
+              <div class="stat-card-left">
+                <span class="stat-label">Total Patients Supported</span>
+                <span class="stat-value" id="stat-total-patients">248</span>
+                <span class="stat-trend trend-up"><i data-lucide="arrow-up-right"></i> +12% this week</span>
+              </div>
+              <div class="stat-icon icon-blue">
+                <i data-lucide="accessibility"></i>
+              </div>
+            </div>
+            
+            <div class="stat-card glass-card">
+              <div class="stat-card-left">
+                <span class="stat-label">Active Urgent Cases</span>
+                <span class="stat-value" id="stat-active-cases">42</span>
+                <span class="stat-trend trend-down"><i data-lucide="arrow-down-right"></i> -4% this week</span>
+              </div>
+              <div class="stat-icon icon-green">
+                <i data-lucide="activity"></i>
+              </div>
+            </div>
+            
+            <div class="stat-card glass-card">
+              <div class="stat-card-left">
+                <span class="stat-label">Registered Volunteers</span>
+                <span class="stat-value" id="stat-registered-volunteers">86</span>
+                <span class="stat-trend trend-up"><i data-lucide="arrow-up-right"></i> +6 new onboarded</span>
+              </div>
+              <div class="stat-icon icon-yellow">
+                <i data-lucide="users"></i>
+              </div>
+            </div>
+            
+            <div class="stat-card glass-card">
+              <div class="stat-card-left">
+                <span class="stat-label">Partner Hospitals</span>
+                <span class="stat-value" id="stat-partner-hospitals">12</span>
+                <span class="stat-trend"><i data-lucide="shield-check"></i> 100% operational</span>
+              </div>
+              <div class="stat-icon icon-red">
+                <i data-lucide="building-2"></i>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Charts Section -->
+          <div class="dashboard-charts-grid">
+            <div class="chart-card glass-card">
+              <div class="chart-header">
+                <h3>Monthly Patient Requests</h3>
+                <span class="chart-subtitle">Request influx overview</span>
+              </div>
+              <div class="chart-body">
+                <canvas id="monthlyRequestsChart"></canvas>
+              </div>
+            </div>
+            
+            <div class="chart-card glass-card">
+              <div class="chart-header">
+                <h3>Priority Distribution</h3>
+                <span class="chart-subtitle">Patient severity breakdown</span>
+              </div>
+              <div class="chart-body">
+                <canvas id="priorityDistributionChart"></canvas>
+              </div>
+            </div>
+            
+            <div class="chart-card glass-card">
+              <div class="chart-header">
+                <h3>Volunteer Activity</h3>
+                <span class="chart-subtitle">Case resolution metrics</span>
+              </div>
+              <div class="chart-body">
+                <canvas id="volunteerActivityChart"></canvas>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Bottom Layout: Live Table & Feed -->
+          <div class="dashboard-bottom-grid">
+            
+            <!-- Live Patient Requests Table Card -->
+            <div class="table-card glass-card">
+              <div class="table-card-header">
+                <div class="header-title-wrapper">
+                  <h3>Live Patient Support Requests</h3>
+                  <span class="sub-legend">Real-time incoming support pipeline</span>
+                </div>
+                
+                <!-- Filters panel -->
+                <div class="table-filters-container">
+                  <div class="filter-item">
+                    <i data-lucide="search" class="filter-search-icon"></i>
+                    <input type="text" id="table-search-input" placeholder="Search patients..." aria-label="Search patient requests table">
+                  </div>
+                  <div class="filter-item">
+                    <select id="table-filter-priority" class="filter-select" aria-label="Filter by Priority">
+                      <option value="all">All Priorities</option>
+                      <option value="Emergency">Emergency</option>
+                      <option value="High">High</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Low">Low</option>
+                    </select>
+                  </div>
+                  <div class="filter-item">
+                    <select id="table-filter-status" class="filter-select" aria-label="Filter by Status">
+                      <option value="all">All Statuses</option>
+                      <option value="Pending">Pending</option>
+                      <option value="Assigned">Assigned</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Resolved">Resolved</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="table-overflow-wrapper">
+                <table class="data-table" id="dashboard-patients-table">
+                  <thead>
+                    <tr>
+                      <th>Patient Name</th>
+                      <th>Age</th>
+                      <th>Medical Issue</th>
+                      <th>Priority</th>
+                      <th>Status</th>
+                      <th>Assigned Volunteer</th>
+                      <th class="text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="patient-table-body">
+                    <!-- Javascript populated -->
+                  </tbody>
+                </table>
+              </div>
+              
+              <div class="table-card-footer">
+                <span class="table-entries-info" id="table-entries-count">Showing 10 of 20 entries</span>
+                <div class="pagination-wrapper" id="table-pagination">
+                  <!-- Pagination buttons generated by script -->
+                </div>
+              </div>
+            </div>
+            
+            <!-- Recent Activity Feed Card -->
+            <div class="activity-card glass-card">
+              <div class="activity-card-header">
+                <h3>Recent Live Activity</h3>
+                <span class="sub-legend">Real-time system updates</span>
+              </div>
+              <div class="activity-feed-container" id="recent-activity-feed">
+                <!-- Javascript populated -->
+              </div>
+            </div>
+            
+          </div>
+        </section>
+        
+        <!-- ========================================== -->
+        <!-- PATIENT SUPPORT VIEW                       -->
+        <!-- ========================================== -->
+        <section id="view-patient-support" class="view-panel">
+          <div class="view-header">
+            <div>
+              <h2 class="view-title">Patient Support Portal</h2>
+              <p class="view-subtitle">Register new patient requests for critical or primary healthcare coordination</p>
+            </div>
+          </div>
+          
+          <div class="form-and-ai-split-grid">
+            <!-- Support Request Form Card -->
+            <div class="form-card glass-card">
+              <div class="card-title-bar">
+                <i data-lucide="clipboard-list" class="title-icon"></i>
+                <div>
+                  <h3>Patient Intake Form</h3>
+                  <p>Submit details to initialize emergency assessment and volunteer assignment</p>
+                </div>
+              </div>
+              
+              <form id="patient-support-form" class="themed-form" novalidate>
+                <div class="form-grid-2-col">
+                  <div class="form-group">
+                    <label for="patient-full-name">Full Name <span class="required">*</span></label>
+                    <input type="text" id="patient-full-name" required placeholder="John Doe" autocomplete="name">
+                    <span class="validation-error-msg" id="err-patient-name">Name is required.</span>
+                  </div>
+                  
+                  <div class="form-grid-2-col-nested">
+                    <div class="form-group">
+                      <label for="patient-age">Age <span class="required">*</span></label>
+                      <input type="number" id="patient-age" required min="0" max="130" placeholder="45" autocomplete="off">
+                      <span class="validation-error-msg" id="err-patient-age">Provide a valid age.</span>
+                    </div>
+                    
+                    <div class="form-group">
+                      <label for="patient-gender">Gender <span class="required">*</span></label>
+                      <select id="patient-gender" required>
+                        <option value="" disabled selected>Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                      </select>
+                      <span class="validation-error-msg" id="err-patient-gender">Gender is required.</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="form-grid-2-col">
+                  <div class="form-group">
+                    <label for="patient-phone">Phone Number <span class="required">*</span></label>
+                    <input type="tel" id="patient-phone" required placeholder="e.g. +91 98765 43210" autocomplete="tel">
+                    <span class="validation-error-msg" id="err-patient-phone">Provide a valid 10-digit phone number.</span>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="patient-email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="patient-email" required placeholder="john.doe@example.com" autocomplete="email">
+                    <span class="validation-error-msg" id="err-patient-email">Provide a valid email address.</span>
+                  </div>
+                </div>
+                
+                <div class="form-grid-2-col">
+                  <div class="form-group">
+                    <label for="patient-location">City / Location <span class="required">*</span></label>
+                    <input type="text" id="patient-location" required placeholder="e.g. Hyderabad, Telangana" autocomplete="address-level2">
+                    <span class="validation-error-msg" id="err-patient-location">Location is required.</span>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="patient-priority">Priority Level <span class="required">*</span></label>
+                    <select id="patient-priority" required>
+                      <option value="" disabled selected>Select severity</option>
+                      <option value="Low">Low (Routine Checkups / Mild issues)</option>
+                      <option value="Medium">Medium (Chronic followups / Diagnostic testing)</option>
+                      <option value="High">High (High fever, acute pain, open injuries)</option>
+                      <option value="Emergency">Emergency (Cardiac arrest, respiratory distress)</option>
+                    </select>
+                    <span class="validation-error-msg" id="err-patient-priority">Priority selection is required.</span>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label for="patient-medical-issue">Medical Issue / Symptoms <span class="required">*</span></label>
+                  <input type="text" id="patient-medical-issue" required placeholder="e.g. Severe chest pain, persistent high fever, bone fracture" autocomplete="off">
+                  <span class="validation-error-msg" id="err-patient-issue">Medical issue details are required.</span>
+                </div>
+                
+                <div class="form-group">
+                  <label for="patient-notes">Additional Notes / History</label>
+                  <textarea id="patient-notes" rows="4" placeholder="Detail any existing medical history, allergies, medication list, or coordinates for transit..."></textarea>
+                </div>
+                
+                <div class="form-actions">
+                  <button type="reset" class="btn btn-secondary" id="patient-form-reset">Reset Form</button>
+                  <button type="submit" class="btn btn-primary" id="patient-form-submit">
+                    <i data-lucide="plus-circle"></i>
+                    Request Medical Support
+                  </button>
+                </div>
+              </form>
+            </div>
+            
+            <!-- AI Summary Generator Display Panel -->
+            <div class="ai-summary-card-panel">
+              <div class="ai-header-decor">
+                <div class="sparkles-badge">
+                  <i data-lucide="sparkles"></i>
+                  <span>HealthBridge AI Engine</span>
+                </div>
+              </div>
+              
+              <div class="ai-panel-placeholder" id="ai-summary-placeholder">
+                <i data-lucide="brain-circuit" class="ai-circuit-icon"></i>
+                <h3>AI Support Summary</h3>
+                <p>Submit a patient support request form on the left. The AI Engine will instantly compile raw intake answers into a structured clinical brief for coordinators and dispatch units.</p>
+              </div>
+              
+              <div class="ai-summary-loaded-card glass-card hidden" id="ai-summary-card">
+                <div class="ai-card-title-bar">
+                  <div class="bot-icon-wrapper">
+                    <i data-lucide="bot"></i>
+                  </div>
+                  <div>
+                    <h4>Smart Clinical Summary</h4>
+                    <span>Generated instantly in real-time</span>
+                  </div>
+                </div>
+                
+                <div class="ai-summary-content" id="ai-summary-content-text">
+                  <!-- Populated dynamically -->
+                </div>
+                
+                <div class="ai-card-meta-chips">
+                  <div class="meta-chip" id="summary-meta-priority">
+                    <span class="chip-dot dot-red"></span>
+                    Priority: Emergency
+                  </div>
+                  <div class="meta-chip">
+                    <i data-lucide="clock"></i>
+                    Recommended SLA: <span id="summary-meta-sla">Immediate</span>
+                  </div>
+                </div>
+                
+                <div class="ai-card-actions">
+                  <button class="btn btn-outline" id="ai-copy-summary">
+                    <i data-lucide="copy"></i>
+                    Copy Summary
+                  </button>
+                  <button class="btn btn-outline" id="ai-download-summary">
+                    <i data-lucide="download"></i>
+                    Download Text
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- ========================================== -->
+        <!-- VOLUNTEER REGISTRATION VIEW                -->
+        <!-- ========================================== -->
+        <section id="view-volunteer" class="view-panel">
+          <div class="view-header">
+            <div>
+              <h2 class="view-title">Volunteer Network Management</h2>
+              <p class="view-subtitle">Onboard healthcare professionals, drivers, and coordinators to our support network</p>
+            </div>
+          </div>
+          
+          <div class="volunteer-view-grid">
+            <!-- Registration Form Card -->
+            <div class="form-card glass-card">
+              <div class="card-title-bar">
+                <i data-lucide="user-check" class="title-icon"></i>
+                <div>
+                  <h3>Volunteer Intake Form</h3>
+                  <p>Fill out the profile details to register an active rescue/support resource</p>
+                </div>
+              </div>
+              
+              <!-- Success Banner -->
+              <div class="success-banner-alert hidden" id="volunteer-success-banner">
+                <i data-lucide="check-circle-2"></i>
+                <div>
+                  <h4>Onboarding Successful!</h4>
+                  <p>Resource registered and mapped to active regional dashboard.</p>
+                </div>
+              </div>
+              
+              <form id="volunteer-reg-form" class="themed-form" novalidate>
+                <div class="form-group">
+                  <label for="vol-full-name">Full Name <span class="required">*</span></label>
+                  <input type="text" id="vol-full-name" required placeholder="Jane Smith" autocomplete="name">
+                  <span class="validation-error-msg" id="err-vol-name">Full name is required.</span>
+                </div>
+                
+                <div class="form-grid-2-col">
+                  <div class="form-group">
+                    <label for="vol-email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="vol-email" required placeholder="jane.smith@example.com" autocomplete="email">
+                    <span class="validation-error-msg" id="err-vol-email">Valid email is required.</span>
+                  </div>
+                  <div class="form-group">
+                    <label for="vol-phone">Phone Number <span class="required">*</span></label>
+                    <input type="tel" id="vol-phone" required placeholder="e.g. +91 98765 12345" autocomplete="tel">
+                    <span class="validation-error-msg" id="err-vol-phone">Provide a valid 10-digit phone number.</span>
+                  </div>
+                </div>
+                
+                <div class="form-grid-2-col">
+                  <div class="form-group">
+                    <label for="vol-city">City <span class="required">*</span></label>
+                    <input type="text" id="vol-city" required placeholder="e.g. Hyderabad" autocomplete="address-level2">
+                    <span class="validation-error-msg" id="err-vol-city">City is required.</span>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="vol-availability">Weekly Availability <span class="required">*</span></label>
+                    <select id="vol-availability" required>
+                      <option value="" disabled selected>Select Availability</option>
+                      <option value="Full-time">Full-time (On-Call 24/7)</option>
+                      <option value="Part-time">Part-time (20-30 hours/week)</option>
+                      <option value="Weekends">Weekends Only</option>
+                      <option value="Evenings">Evenings Only</option>
+                    </select>
+                    <span class="validation-error-msg" id="err-vol-availability">Please choose availability.</span>
+                  </div>
+                </div>
+                
+                <!-- Specialized Skills Chips (Checkbox selections) -->
+                <div class="form-group">
+                  <label>Specialized Skills & Certifications <span class="required">*</span></label>
+                  <span class="form-hint">Select all areas of expertise that apply to clinical dispatch</span>
+                  
+                  <div class="skills-chips-wrapper">
+                    <label class="skill-checkbox-chip">
+                      <input type="checkbox" name="vol-skills" value="First Aid / CPR" checked>
+                      <span>First Aid / CPR</span>
+                    </label>
+                    <label class="skill-checkbox-chip">
+                      <input type="checkbox" name="vol-skills" value="Medical Professional (MD/RN)">
+                      <span>Medical Professional (MD/RN)</span>
+                    </label>
+                    <label class="skill-checkbox-chip">
+                      <input type="checkbox" name="vol-skills" value="Emergency Driving">
+                      <span>Emergency Driving</span>
+                    </label>
+                    <label class="skill-checkbox-chip">
+                      <input type="checkbox" name="vol-skills" value="Crisis Counseling">
+                      <span>Crisis Counseling</span>
+                    </label>
+                    <label class="skill-checkbox-chip">
+                      <input type="checkbox" name="vol-skills" value="Language Translation">
+                      <span>Language Translation</span>
+                    </label>
+                    <label class="skill-checkbox-chip">
+                      <input type="checkbox" name="vol-skills" value="Logistics Coordination">
+                      <span>Logistics Coordination</span>
+                    </label>
+                    <label class="skill-checkbox-chip">
+                      <input type="checkbox" name="vol-skills" value="Pediatrics Specialist">
+                      <span>Pediatrics Specialist</span>
+                    </label>
+                  </div>
+                  <span class="validation-error-msg" id="err-vol-skills">Select at least one skill.</span>
+                </div>
+                
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-primary block-btn" id="vol-form-submit">
+                    <i data-lucide="shield-alert"></i>
+                    Register as Volunteer
+                  </button>
+                </div>
+              </form>
+            </div>
+            
+            <!-- Volunteer Network Statistics Panel -->
+            <div class="volunteer-stats-panel">
+              <div class="glass-card vol-stat-summary">
+                <h3>Volunteer Force Metrics</h3>
+                <p class="summary-desc">Active NGO operational resources across municipal clusters</p>
+                
+                <div class="vol-stats-bar-grid">
+                  <div class="vol-stat-counter">
+                    <span class="counter-val" id="vol-stat-active-count">86</span>
+                    <span class="counter-title">Active Field Rescuers</span>
+                  </div>
+                  <div class="vol-stat-counter">
+                    <span class="counter-val" id="vol-stat-avail-count">58</span>
+                    <span class="counter-title">Available for Duty</span>
+                  </div>
+                  <div class="vol-stat-counter">
+                    <span class="counter-val" id="vol-stat-medical-count">24</span>
+                    <span class="counter-title">Doctor/Nurse Resources</span>
+                  </div>
+                </div>
+                
+                <div class="skills-distribution-list">
+                  <h4>Onboarded Resource Skills Map</h4>
+                  
+                  <div class="skill-progress-bar">
+                    <div class="progress-info">
+                      <span>First Aid & Crisis Care</span>
+                      <span id="skill-val-firstaid">68%</span>
+                    </div>
+                    <div class="progress-track">
+                      <div class="progress-fill" style="width: 68%; background: var(--blue-primary);"></div>
+                    </div>
+                  </div>
+                  
+                  <div class="skill-progress-bar">
+                    <div class="progress-info">
+                      <span>Emergency Logistics & Driving</span>
+                      <span id="skill-val-driving">45%</span>
+                    </div>
+                    <div class="progress-track">
+                      <div class="progress-fill" style="width: 45%; background: var(--teal-primary);"></div>
+                    </div>
+                  </div>
+                  
+                  <div class="skill-progress-bar">
+                    <div class="progress-info">
+                      <span>Licensed Medical Doctors / RNs</span>
+                      <span id="skill-val-doctors">28%</span>
+                    </div>
+                    <div class="progress-track">
+                      <div class="progress-fill" style="width: 28%; background: var(--green-success);"></div>
+                    </div>
+                  </div>
+                  
+                  <div class="skill-progress-bar">
+                    <div class="progress-info">
+                      <span>Crisis Therapy & Social Work</span>
+                      <span id="skill-val-counseling">34%</span>
+                    </div>
+                    <div class="progress-track">
+                      <div class="progress-fill" style="width: 34%; background: var(--yellow-warning);"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="glass-card onboard-list-card">
+                <h3>Recently Onboarded</h3>
+                <ul class="recently-onboarded-list" id="recently-onboarded-volunteers-ul">
+                  <!-- Populated dynamically -->
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+        <!-- ========================================== -->
+        <!-- AI FAQ CHATBOT VIEW                        -->
+        <!-- ========================================== -->
+        <section id="view-faq" class="view-panel">
+          <div class="view-header">
+            <div>
+              <h2 class="view-title">AI FAQ Assistant</h2>
+              <p class="view-subtitle">Interactive chatbot providing rapid responses for healthcare, registration, and emergency resource questions</p>
+            </div>
+          </div>
+          
+          <div class="chatbot-container glass-card">
+            <div class="chatbot-header">
+              <div class="chatbot-header-left">
+                <div class="bot-indicator">
+                  <i data-lucide="bot"></i>
+                  <span class="active-pulse"></span>
+                </div>
+                <div>
+                  <h3>HealthBridge FAQ Bot</h3>
+                  <span>AI Assistant • Online & Ready</span>
+                </div>
+              </div>
+              <div class="chatbot-header-right">
+                <button class="icon-btn" id="clear-chat-btn" title="Clear Chat History" aria-label="Clear chat history">
+                  <i data-lucide="trash-2"></i>
+                </button>
+              </div>
+            </div>
+            
+            <!-- Chat logs -->
+            <div class="chat-messages-viewport" id="chat-messages-container">
+              <!-- Dynamically populated by JS -->
+            </div>
+            
+            <!-- Suggestion chips row -->
+            <div class="chat-suggestions-chips" id="chatbot-suggestion-chips">
+              <button class="suggestion-chip" data-question="How do I request medical support?">Request Support</button>
+              <button class="suggestion-chip" data-question="Can I register as a volunteer?">Become a Volunteer</button>
+              <button class="suggestion-chip" data-question="Is emergency support available?">Emergency Support</button>
+              <button class="suggestion-chip" data-question="How are patients prioritized?">Prioritization Rules</button>
+              <button class="suggestion-chip" data-question="Can hospitals join the network?">Hospital Network</button>
+              <button class="suggestion-chip" data-question="How can I donate?">Donation channels</button>
+              <button class="suggestion-chip" data-question="How can I contact the NGO?">Contact NGO</button>
+              <button class="suggestion-chip" data-question="Is patient data secure?">Data Security</button>
+            </div>
+            
+            <!-- Chat Input form -->
+            <form id="chatbot-input-form" class="chat-input-bar">
+              <input type="text" id="chat-text-input" placeholder="Type your healthcare NGO support query here..." required autocomplete="off" aria-label="Chat input message text">
+              <button type="submit" class="chat-send-btn" aria-label="Send message">
+                <i data-lucide="send"></i>
+              </button>
+            </form>
+          </div>
+        </section>
+        
+        <!-- ========================================== -->
+        <!-- PARTNER HOSPITALS VIEW                     -->
+        <!-- ========================================== -->
+        <section id="view-hospitals" class="view-panel">
+          <div class="view-header">
+            <div>
+              <h2 class="view-title">Partner Hospital Network</h2>
+              <p class="view-subtitle">Real-time emergency bed availability and partner hospital response coordinates</p>
+            </div>
+          </div>
+          
+          <div class="hospitals-grid" id="hospitals-container">
+            <!-- Populated dynamically by JS -->
+          </div>
+        </section>
+        
+        <!-- ========================================== -->
+        <!-- REPORTS VIEW                               -->
+        <!-- ========================================== -->
+        <section id="view-reports" class="view-panel">
+          <div class="view-header">
+            <div>
+              <h2 class="view-title">Reports & Operational Analytics</h2>
+              <p class="view-subtitle">Deep dive statistics into patient demographics, priority SLAs, and volunteer caseloads</p>
+            </div>
+            <div class="view-actions">
+              <button class="btn btn-outline" id="reports-print-btn">
+                <i data-lucide="printer"></i>
+                Print Report
+              </button>
+              <button class="btn btn-primary" id="reports-export-btn">
+                <i data-lucide="download"></i>
+                Export CSV Dataset
+              </button>
+            </div>
+          </div>
+          
+          <!-- Detailed Analytics Cards Grid -->
+          <div class="reports-analytics-grid">
+            <div class="glass-card report-chart-large">
+              <div class="chart-header">
+                <h3>Case Severity vs. Status Progression</h3>
+                <p>Cross-tabulation of patient triage level against active volunteer action stages</p>
+              </div>
+              <div class="chart-body-lg">
+                <canvas id="reportProgressionChart"></canvas>
+              </div>
+            </div>
+            
+            <div class="glass-card report-chart-large">
+              <div class="chart-header">
+                <h3>Regional Patient Density Map</h3>
+                <p>Case distributions across local municipality zones and clinics</p>
+              </div>
+              <div class="chart-body-lg">
+                <canvas id="reportDensityChart"></canvas>
+              </div>
+            </div>
+          </div>
+          
+          <div class="reports-summary-cards-grid">
+            <div class="report-summary-card glass-card">
+              <div class="card-icon-wrapper text-teal">
+                <i data-lucide="clock-3"></i>
+              </div>
+              <div class="summary-details">
+                <h4>Average Response Time</h4>
+                <span class="value">2.4 Hours</span>
+                <span class="trend positive"><i data-lucide="trending-down"></i> -15 mins this month</span>
+              </div>
+            </div>
+            
+            <div class="report-summary-card glass-card">
+              <div class="card-icon-wrapper text-green">
+                <i data-lucide="check-circle"></i>
+              </div>
+              <div class="summary-details">
+                <h4>Case Resolution Rate</h4>
+                <span class="value">94.8%</span>
+                <span class="trend positive"><i data-lucide="trending-up"></i> +1.2% versus last quarter</span>
+              </div>
+            </div>
+            
+            <div class="report-summary-card glass-card">
+              <div class="card-icon-wrapper text-blue">
+                <i data-lucide="activity"></i>
+              </div>
+              <div class="summary-details">
+                <h4>Partner Referral Rate</h4>
+                <span class="value">18.2%</span>
+                <span class="trend"><i data-lucide="info"></i> Hospital transfers</span>
+              </div>
+            </div>
+            
+            <div class="report-summary-card glass-card">
+              <div class="card-icon-wrapper text-red">
+                <i data-lucide="ambulance"></i>
+              </div>
+              <div class="summary-details">
+                <h4>Emergency Escapes Saved</h4>
+                <span class="value">48 Patients</span>
+                <span class="trend positive"><i data-lucide="trending-up"></i> Critical dispatch recoveries</span>
+              </div>
+            </div>
+          </div>
+        </section>
+        
+      </div>
+      
+      <!-- Footer section -->
+      <footer class="app-footer">
+        <div class="footer-left">
+          <span>&copy; 2026 HealthBridge AI. All rights reserved. Registered Healthcare NGO Network.</span>
+        </div>
+        <div class="footer-right">
+          <span>Developed by <strong>Sai Charan Teja Nukalla</strong></span>
+        </div>
+      </footer>
+      
+    </main>
+  </div>
+  
+  <!-- ========================================== -->
+  <!-- NATIVE MODAL DIALOGS                       -->
+  <!-- ========================================== -->
+  
+  <!-- Hospital Details Modal -->
+  <dialog id="hospital-details-modal" class="custom-dialog-modal glass-card">
+    <form method="dialog" class="dialog-wrapper">
+      <header class="dialog-header">
+        <h3 id="modal-hospital-name">Apollo Hospital Details</h3>
+        <button class="dialog-close-btn" value="close" aria-label="Close dialog">
+          <i data-lucide="x"></i>
+        </button>
+      </header>
+      
+      <main class="dialog-body">
+        <div class="modal-detail-row">
+          <strong>Location:</strong>
+          <span id="modal-hospital-location">Film Nagar, Jubilee Hills</span>
+        </div>
+        <div class="modal-detail-row">
+          <strong>Contact Number:</strong>
+          <span id="modal-hospital-contact">+91 40 2360 7777</span>
+        </div>
+        <div class="modal-detail-row">
+          <strong>Beds Available:</strong>
+          <span id="modal-hospital-beds" class="badge-beds">18 Beds</span>
+        </div>
+        <div class="modal-detail-row">
+          <strong>Emergency Available:</strong>
+          <span id="modal-hospital-emergency" class="badge-status-pill emergency">Yes</span>
+        </div>
+        <div class="modal-specialities">
+          <strong>Specialities Supported:</strong>
+          <ul id="modal-hospital-specs">
+            <li>Emergency & Trauma</li>
+            <li>Cardiology</li>
+            <li>Pulmonology</li>
+            <li>ICU Care</li>
+          </ul>
+        </div>
+        
+        <div class="hospital-booking-simulator">
+          <h4>Simulate NGO Bed Reservation</h4>
+          <p>Instantly reserve a bed in the partner portal for high-priority patients.</p>
+          <button type="button" class="btn btn-primary" id="modal-reserve-bed-btn">Reserve Bed Now</button>
+        </div>
+      </main>
+      
+      <footer class="dialog-footer">
+        <button value="close" class="btn btn-secondary">Close Details</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Patient Assignment Details Modal -->
+  <dialog id="patient-assignment-modal" class="custom-dialog-modal glass-card">
+    <form method="dialog" class="dialog-wrapper">
+      <header class="dialog-header">
+        <h3>Patient Case Details</h3>
+        <button class="dialog-close-btn" value="close" aria-label="Close dialog">
+          <i data-lucide="x"></i>
+        </button>
+      </header>
+      
+      <main class="dialog-body">
+        <div class="patient-card-detail-header">
+          <h4 id="case-patient-name">Ravi Kumar</h4>
+          <span class="badge-status-pill emergency" id="case-patient-priority">High</span>
+        </div>
+        
+        <div class="case-detail-items">
+          <div class="case-item"><strong>Age/Gender:</strong> <span id="case-patient-age-gender">65 / Male</span></div>
+          <div class="case-item"><strong>Location:</strong> <span id="case-patient-location">Hyderabad</span></div>
+          <div class="case-item"><strong>Phone:</strong> <span id="case-patient-phone">+91 98765 43210</span></div>
+          <div class="case-item"><strong>Medical Issue:</strong> <span id="case-patient-issue">High Fever and Cough</span></div>
+          <div class="case-item"><strong>Additional Details:</strong> <p id="case-patient-notes" class="notes-para">Patient reporting symptoms for 3 days.</p></div>
+        </div>
+        
+        <div class="assignment-panel-box">
+          <h4>Manage Care Assignment</h4>
+          <div class="form-group">
+            <label for="assign-volunteer-select">Assign Field Volunteer</label>
+            <select id="assign-volunteer-select">
+              <!-- Dynamically populated -->
+            </select>
+          </div>
+          <div class="form-group mt-2">
+            <label for="assign-status-select">Case Progress Status</label>
+            <select id="assign-status-select">
+              <option value="Pending">Pending</option>
+              <option value="Assigned">Assigned</option>
+              <option value="In Progress">In Progress</option>
+              <option value="Resolved">Resolved</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn-primary w-full mt-3" id="save-case-assignment-btn">Update Case Assignment</button>
+        </div>
+      </main>
+      
+      <footer class="dialog-footer">
+        <button value="close" class="btn btn-secondary">Close Case</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Lucide Icons CDN Script -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
